@@ -11,7 +11,8 @@
     "test": "jest --watchAll",
     "lint": "expo lint",
     "prettier": "prettier --write .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "lint-staged": "lint-staged"
   },
   "jest": {
     "preset": "jest-expo"
@@ -58,9 +59,9 @@
   },
   "private": true,
   "lint-staged": {
-    "*.{ts,js,tsx,jsx,json,html.vue}": [
-      "prettier --write",
-      "eslint"
+    "*.{ts,js,tsx,jsx}": [
+      "expo lint .",
+      "prettier --write"
     ]
   }
 }
