@@ -24,3 +24,7 @@ export const Colors = {
     tabIconSelected: tintColorDark,
   },
 };
+
+export type ColorsType = {
+  [K in keyof typeof Colors as `${K & string}Color`]?: string;
+};
