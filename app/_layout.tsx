@@ -13,11 +13,16 @@ import { TamaguiProvider } from "tamagui";
 
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { tamaguiConfig } from "@/tamagui.config";
+import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
+import { db } from "@/db";
+import migrations from "@/drizzle/migrations";
+import { ThemedText } from "@/components/ThemedText";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  const { success, error } = useMigrations(db, migrations);
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -30,8 +35,16 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  if (!loaded) {
+  if (!loaded || !success) {
     return null;
+  }
+
+  if (error) {
+    return (
+      <ThemedText>
+        Une erreur lors de la mise en place est survenue : {error.message}
+      </ThemedText>
+    );
   }
 
   return (
