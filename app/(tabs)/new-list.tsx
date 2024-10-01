@@ -2,28 +2,33 @@ import { Image, StyleSheet } from "react-native";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
 import { db } from "@/db";
 import { lists } from "@/db/schema";
-import { Card, YStack, Form } from "tamagui";
+import { Card, YStack, Form, Button, Input } from "tamagui";
 import { ThemedView } from "@/components/ThemedView";
 import { ThemedText } from "@/components/ThemedText";
-import { Button, Input } from "tamagui";
 import { useState } from "react";
 import { router } from "expo-router";
+import { createListSchema } from "@/lib/schemas/list";
+import { useMutation } from "@tanstack/react-query";
 
 export default function NewListScreen() {
-  const [data, setData] = useState({ name: "", loading: false });
-
-  const onSubmit = () => {
-    // Simulate form submission
-    setData({ ...data, loading: true });
-    console.log("Submitted Data:", data);
-    db.insert(lists)
-      .values(data)
-      .returning({ id: lists.id })
-      .then(() => {
-        setData({ name: "", loading: false });
-        router.push("/lists");
-      });
-  };
+  const [info, setInfo] = useState({ name: "" });
+  const { mutate, isPending, error } = useMutation({
+    mutationKey: ["create-list"],
+    mutationFn: () => {
+      console.log("Submitted Data:", info);
+      const { data: newList, error } = createListSchema.safeParse(info);
+      if (error) {
+        throw error.issues[0].message;
+      }
+      return db.insert(lists).values(newList).returning({ id: lists.id });
+    },
+    onError: (error) => {
+      console.log("Error:", error);
+    },
+    onSuccess: () => {
+      router.push("/lists");
+    },
+  });
 
   return (
     <ParallaxScrollView
@@ -38,21 +43,28 @@ export default function NewListScreen() {
       <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Nouvelle Liste</ThemedText>
       </ThemedView>
-      <Form onSubmit={onSubmit}>
+      <Form onSubmit={mutate}>
         <YStack>
           <Card elevate size="$4" bordered>
             <Card.Header padded gap={16}>
               <Input
                 placeholder="Nom de la liste"
-                value={data.name}
-                onChangeText={(name) => setData({ ...data, name })}
+                value={info.name}
+                onChangeText={(name) => setInfo({ ...info, name })}
               />
-              <Form.Trigger asChild disabled={data.loading}>
-                <Button borderRadius="$10" disabled={data.loading}>
-                  {data.loading ? "Chargement..." : "Créer"}
+              <Form.Trigger asChild disabled={isPending}>
+                <Button borderRadius="$10" disabled={isPending}>
+                  {isPending ? "Chargement..." : "Créer"}
                 </Button>
               </Form.Trigger>
             </Card.Header>
+            {error ? (
+              <Card.Footer padded>
+                <ThemedText type="default" color="red">
+                  {error}
+                </ThemedText>
+              </Card.Footer>
+            ) : null}
           </Card>
         </YStack>
       </Form>

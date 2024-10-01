@@ -39,6 +39,18 @@ export default function TabLayout() {
           ),
         }}
       />
+      <Tabs.Screen
+        name="new-list"
+        options={{
+          title: "Nouvelle Liste",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "folder" : "folder-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
     </Tabs>
   );
 }
