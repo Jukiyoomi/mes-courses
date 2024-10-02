@@ -17,10 +17,8 @@ export default function NewListScreen() {
     mutationFn: () => {
       console.log("Submitted Data:", info);
       const { data: newList, error } = createListSchema.safeParse(info);
-      if (error) {
-        throw error.issues[0].message;
-      }
-      return db.insert(lists).values(newList).returning({ id: lists.id });
+      if (error) throw error.issues[0].message;
+      return db.insert(lists).values(newList);
     },
     onError: (error) => {
       console.log("Error:", error);
