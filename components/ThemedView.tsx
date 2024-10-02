@@ -15,5 +15,8 @@ export function ThemedView({
     "background",
   );
 
+  if (otherProps.backgroundColor || otherProps.bg)
+    return <View style={style} {...otherProps} />;
+
   return <View style={[{ backgroundColor }, style]} {...otherProps} />;
 }
