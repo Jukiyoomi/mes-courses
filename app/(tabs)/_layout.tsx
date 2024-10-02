@@ -28,7 +28,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="lists"
+        name="lists/index"
         options={{
           title: "Mes Listes",
           tabBarIcon: ({ color, focused }) => (
@@ -40,9 +40,23 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="new-list"
+        name="lists/new"
         options={{
           title: "Nouvelle Liste",
+          tabBarIcon: ({ color, focused }) => (
+            <TabBarIcon
+              name={focused ? "folder" : "folder-outline"}
+              color={color}
+            />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name="lists/[id]"
+        options={{
+          lazy: true,
+          title: "Une Liste",
+          tabBarButton: () => null,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon
               name={focused ? "folder" : "folder-outline"}

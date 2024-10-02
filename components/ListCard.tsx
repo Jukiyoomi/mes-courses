@@ -2,6 +2,7 @@ import { Button, Card, H4, Image } from "tamagui";
 import { ThemedText } from "./ThemedText";
 import { InferSelectModel } from "drizzle-orm";
 import { lists } from "@/db/schema";
+import { router } from "expo-router";
 
 type Props = {
   list: InferSelectModel<typeof lists>;
@@ -13,7 +14,14 @@ export default function ListCardItem({ list }: Props) {
       <Card.Header padded>
         <H4>{list.name}</H4>
         <ThemedText>5 items en attente.</ThemedText>
-        <Button borderRadius="$10">Voir plus</Button>
+        <Button
+          borderRadius="$10"
+          onPress={() => {
+            router.push(`/lists/${list.id}`);
+          }}
+        >
+          Voir plus
+        </Button>
       </Card.Header>
       <Card.Background>
         <Image
