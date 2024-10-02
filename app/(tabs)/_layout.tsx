@@ -28,7 +28,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="lists"
+        name="lists/index"
         options={{
           title: "Mes Listes",
           tabBarIcon: ({ color, focused }) => (
@@ -40,7 +40,7 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="new-list"
+        name="lists/new"
         options={{
           title: "Nouvelle Liste",
           tabBarIcon: ({ color, focused }) => (
