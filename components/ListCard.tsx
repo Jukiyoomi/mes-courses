@@ -12,12 +12,17 @@ export default function ListCardItem({ list }: Props) {
   return (
     <Card elevate size="$4" bordered>
       <Card.Header padded>
-        <H4>{list.name}</H4>
-        <ThemedText>5 items en attente.</ThemedText>
+        <H4>
+          {list.name} - {list.id}
+        </H4>
+        <ThemedText>{list.items.length} items en attente.</ThemedText>
         <Button
           borderRadius="$10"
           onPress={() => {
-            router.push(`/lists/${list.id}`);
+            router.push({
+              pathname: "/lists/details/[id]",
+              params: { id: list.id.toString() },
+            });
           }}
         >
           Voir plus

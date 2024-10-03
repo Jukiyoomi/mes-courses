@@ -52,17 +52,10 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="lists/[id]"
+        name="lists/details/[id]/index"
         options={{
-          lazy: true,
           title: "Une Liste",
           tabBarButton: () => null,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "folder" : "folder-outline"}
-              color={color}
-            />
-          ),
         }}
       />
     </Tabs>
