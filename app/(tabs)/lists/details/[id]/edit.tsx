@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 import { db } from "@/db";
 import { lists } from "@/db/schema";
 import { Button, Card, Form, TextArea, YStack } from "tamagui";
@@ -67,8 +66,10 @@ export default function ListScreen() {
 
   return (
     <Container>
-      <ThemedText>Hello world {id}</ThemedText>
-      <ThemedText>{itemsToStr}</ThemedText>
+      <ThemedText type="title" textAlign="center">
+        Edition {list.name}
+      </ThemedText>
+      {/* <ThemedText>{itemsToStr}</ThemedText> */}
       <Form onSubmit={mutate}>
         <YStack>
           <Card elevate size="$4" bordered>
@@ -80,7 +81,7 @@ export default function ListScreen() {
               />
               <Form.Trigger asChild disabled={isPending}>
                 <Button borderRadius="$10" disabled={isPending}>
-                  {isPending ? "Chargement..." : "Créer"}
+                  {isPending ? "Chargement..." : "Ajouter"}
                 </Button>
               </Form.Trigger>
             </Card.Header>
@@ -97,11 +98,3 @@ export default function ListScreen() {
     </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-});
