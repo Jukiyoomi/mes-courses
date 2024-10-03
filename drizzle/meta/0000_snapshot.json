@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "3dc3472d-0521-44af-9f37-8f1e3f0e7cf0",
+  "id": "bd81ee0e-6e31-482b-ac4d-71c8e33b6900",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "lists": {
@@ -20,6 +20,14 @@
           "primaryKey": false,
           "notNull": true,
           "autoincrement": false
+        },
+        "items": {
+          "name": "items",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": "(json_array())"
         }
       },
       "indexes": {
