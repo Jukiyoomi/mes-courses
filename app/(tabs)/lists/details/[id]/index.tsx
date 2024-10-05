@@ -1,4 +1,3 @@
-import { StyleSheet } from "react-native";
 import { db } from "@/db";
 import { Item, lists } from "@/db/schema";
 import {
@@ -12,16 +11,16 @@ import {
 } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
 import Container from "@/components/Container";
-import { router, useLocalSearchParams } from "expo-router";
+import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { eq } from "drizzle-orm";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
 import Progressbar from "@/components/Progressbar";
 
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, refetch } = useQuery({
     queryKey: ["list", id],
     queryFn: () => {
       return db
@@ -29,7 +28,6 @@ export default function ListScreen() {
         .from(lists)
         .where(eq(lists.id, Number(id)));
     },
-    refetchOnMount: true,
   });
   const list = data?.[0];
   const [items, setItems] = useState<Item[]>([]);
@@ -42,6 +40,12 @@ export default function ListScreen() {
       setItems(list.items);
     }
   }, [list]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, []),
+  );
 
   console.log("List", list);
 
@@ -125,11 +129,7 @@ function DeleteDialog({ id }: { id: string }) {
   return (
     <AlertDialog native>
       <AlertDialog.Trigger asChild>
-        <Button
-          variant="outlined"
-          flex={1}
-          // bg={"red"}
-        >
+        <Button variant="outlined" flex={1} bg={"red"}>
           Supprimer la liste
         </Button>
       </AlertDialog.Trigger>
