@@ -1,14 +1,6 @@
 import { db } from "@/db";
 import { Item, lists } from "@/db/schema";
-import {
-  AlertDialog,
-  Button,
-  Card,
-  H5,
-  ScrollView,
-  XStack,
-  YStack,
-} from "tamagui";
+import { Button, Card, H5, ScrollView, XStack, YStack } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
 import Container from "@/components/Container";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
@@ -18,6 +10,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
 import Progressbar from "@/components/Progressbar";
 import { updateListItemsSchema } from "@/lib/schemas/list";
+import Dialog from "@/components/Dialog";
 
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -158,66 +151,22 @@ export default function ListScreen() {
 
 function DeleteDialog({ id }: { id: string }) {
   return (
-    <AlertDialog native>
-      <AlertDialog.Trigger asChild>
-        <Button variant="outlined" flex={1} bg={"red"}>
-          Supprimer la liste
-        </Button>
-      </AlertDialog.Trigger>
-
-      <AlertDialog.Portal>
-        <AlertDialog.Overlay
-          key="overlay"
-          animation="quick"
-          opacity={0.5}
-          enterStyle={{ opacity: 0 }}
-          exitStyle={{ opacity: 0 }}
-        />
-        <AlertDialog.Content
-          bordered
-          elevate
-          key="content"
-          animation={[
-            "quick",
-            {
-              opacity: {
-                overshootClamping: true,
-              },
-            },
-          ]}
-          enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
-          exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
-          x={0}
-          scale={1}
-          opacity={1}
-          y={0}
-        >
-          <YStack>
-            <AlertDialog.Title>Accept</AlertDialog.Title>
-            <AlertDialog.Description>
-              Are you sure you want to delete this list?
-            </AlertDialog.Description>
-
-            <XStack gap="$3" justifyContent="flex-end">
-              <AlertDialog.Cancel asChild>
-                <Button>Cancel</Button>
-              </AlertDialog.Cancel>
-              <AlertDialog.Action
-                asChild
-                onPress={() => {
-                  console.log("Delete list", id);
-                  router.push({
-                    pathname: "/lists/details/[id]/delete",
-                    params: { id },
-                  });
-                }}
-              >
-                <Button>Accept</Button>
-              </AlertDialog.Action>
-            </XStack>
-          </YStack>
-        </AlertDialog.Content>
-      </AlertDialog.Portal>
-    </AlertDialog>
+    <Dialog
+      cancelText="Annuler"
+      validateText="Supprimer"
+      title="Supprimer la liste"
+      description="Êtes-vous sûr de vouloir supprimer cette liste ?"
+      onValidate={() => {
+        console.log("Delete list", id);
+        router.push({
+          pathname: "/lists/details/[id]/delete",
+          params: { id },
+        });
+      }}
+    >
+      <Button variant="outlined" flex={1} bg={"red"}>
+        Supprimer la liste
+      </Button>
+    </Dialog>
   );
 }
