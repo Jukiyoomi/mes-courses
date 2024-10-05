@@ -7,7 +7,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addListItemsSchema } from "@/lib/schemas/list";
+import { updateListItemsSchema } from "@/lib/schemas/list";
 
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -29,7 +29,7 @@ export default function ListScreen() {
     mutationKey: ["update-list"],
     mutationFn: () => {
       console.log("Submitted Data:", itemsToStr);
-      const { data: parsed, error } = addListItemsSchema.safeParse({
+      const { data: parsed, error } = updateListItemsSchema.safeParse({
         items: itemsToStr,
       });
       if (error) throw error?.issues[0].message ?? "Invalid data";

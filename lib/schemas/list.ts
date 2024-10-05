@@ -4,7 +4,7 @@ export const createListSchema = z.object({
   name: z.string({ required_error: "Le nom de la liste est requis" }),
 });
 
-export const addListItemsSchema = z.object({
+export const updateListItemsSchema = z.object({
   items: z.string().transform((val) => {
     const uniqueItems = Array.from(
       new Set(val.split(",").map((item) => item.trim().toLowerCase())),
