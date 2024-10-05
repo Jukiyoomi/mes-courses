@@ -49,7 +49,7 @@ export default function ListScreen() {
   return (
     <Container>
       <ThemedText type="title" textAlign="center">
-        {"Liste inconnue"}
+        {list.name}
       </ThemedText>
       <XStack gap={16}>
         <Button
