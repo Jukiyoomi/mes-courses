@@ -186,11 +186,3 @@ function DeleteDialog({ id }: { id: string }) {
     </AlertDialog>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-});
