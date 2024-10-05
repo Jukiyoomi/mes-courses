@@ -86,7 +86,9 @@ export default function ListScreen() {
       <ThemedText type="title" textAlign="center">
         {list.name}
       </ThemedText>
-      <Progressbar value={checkedPercentage} shouldConfetti />
+      {items.length > 0 ? (
+        <Progressbar value={checkedPercentage} shouldConfetti />
+      ) : null}
       <XStack gap={16}>
         <Button
           flex={1}
