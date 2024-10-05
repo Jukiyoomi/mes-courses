@@ -17,6 +17,7 @@ import { eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
+import Progressbar from "@/components/Progressbar";
 
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -33,6 +34,8 @@ export default function ListScreen() {
   const list = data?.[0];
   const [items, setItems] = useState<Item[]>([]);
   const hasItemsChecked = items.some((item: Item) => item.taken);
+  const checkedPercentage =
+    (items.filter((item: Item) => item.taken).length / items.length) * 100;
 
   useEffect(() => {
     if (list) {
@@ -51,6 +54,7 @@ export default function ListScreen() {
       <ThemedText type="title" textAlign="center">
         {list.name}
       </ThemedText>
+      <Progressbar value={checkedPercentage} shouldConfetti />
       <XStack gap={16}>
         <Button
           flex={1}
