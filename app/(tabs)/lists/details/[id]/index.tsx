@@ -14,12 +14,15 @@ import Container from "@/components/Container";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
 import { eq } from "drizzle-orm";
 import { useCallback, useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery } from "@tanstack/react-query";
 import { Ionicons } from "@expo/vector-icons";
 import Progressbar from "@/components/Progressbar";
+import { updateListItemsSchema } from "@/lib/schemas/list";
 
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const [items, setItems] = useState<Item[]>([]);
+
   const { data, isLoading, refetch } = useQuery({
     queryKey: ["list", id],
     queryFn: () => {
@@ -29,8 +32,33 @@ export default function ListScreen() {
         .where(eq(lists.id, Number(id)));
     },
   });
+
+  const { mutate } = useMutation({
+    mutationKey: ["update-list"],
+    mutationFn: () => {
+      const checked = items
+        .filter((item) => !item.taken)
+        .map((item) => item.name)
+        .join(", ");
+      console.log("Submitted Data:", checked);
+      const { data: parsed, error } = updateListItemsSchema.safeParse({
+        items: checked,
+      });
+      if (error) throw error?.issues[0].message ?? "Invalid data";
+      return db
+        .update(lists)
+        .set({ items: parsed.items })
+        .where(eq(lists.id, Number(id)));
+    },
+    onError: (error) => {
+      console.log("Error:", error);
+    },
+    onSuccess: () => {
+      refetch();
+    },
+  });
+
   const list = data?.[0];
-  const [items, setItems] = useState<Item[]>([]);
   const hasItemsChecked = items.some((item: Item) => item.taken);
   const checkedPercentage =
     (items.filter((item: Item) => item.taken).length / items.length) * 100;
@@ -116,9 +144,10 @@ export default function ListScreen() {
           borderRadius="$10"
           onPress={() => {
             console.log("Checked items");
+            mutate();
           }}
         >
-          Marquer comme non pris
+          Retirer les items cochés
         </Button>
       ) : null}
     </Container>
