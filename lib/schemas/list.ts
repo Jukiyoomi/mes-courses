@@ -5,10 +5,15 @@ export const createListSchema = z.object({
 });
 
 export const addListItemsSchema = z.object({
-  items: z.string().transform((val) =>
-    val.split(",").map((item) => ({
-      name: item.trim().toUpperCase()[0] + item.trim().slice(1),
-      taken: false,
-    })),
-  ),
+  items: z.string().transform((val) => {
+    const uniqueItems = Array.from(
+      new Set(val.split(",").map((item) => item.trim().toLowerCase())),
+    );
+    return uniqueItems
+      .filter((item) => item !== "")
+      .map((item) => ({
+        name: item.charAt(0).toUpperCase() + item.slice(1),
+        taken: false,
+      }));
+  }),
 });
