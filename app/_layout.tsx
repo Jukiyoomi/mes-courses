@@ -26,7 +26,7 @@ const queryClient = new QueryClient();
 
 export default function RootLayout() {
   useReactQueryDevTools(queryClient);
-  const { success, error } = useMigrations(db, migrations);
+  const { error } = useMigrations(db, migrations);
   const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
@@ -40,9 +40,7 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  if (!loaded || !success) {
-    return null;
-  }
+  if (!loaded) return null;
 
   if (error) {
     return (
