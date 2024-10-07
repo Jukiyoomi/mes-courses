@@ -65,13 +65,6 @@ export default function TabLayout() {
           tabBarButton: () => null,
         }}
       />
-      <Tabs.Screen
-        name="lists/details/[id]/delete"
-        options={{
-          title: "SupprimerListe",
-          tabBarButton: () => null,
-        }}
-      />
     </Tabs>
   );
 }
