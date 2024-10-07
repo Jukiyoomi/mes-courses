@@ -1,54 +1,36 @@
-import { db } from "@/db";
-import { lists } from "@/db/schema";
-import { Button, Card, Form, TextArea, YStack } from "tamagui";
+import { Card, Form, TextArea, YStack } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
 import Container from "@/components/Container";
 import { router, useLocalSearchParams } from "expo-router";
-import { eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { updateListItemsSchema } from "@/lib/schemas/list";
 import { Ionicons } from "@expo/vector-icons";
+import { useUpdateList } from "@/queries/mutations";
+import { useGetListById } from "@/queries/queries";
+import Button from "@/components/Button";
 
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data, isLoading } = useQuery({
-    queryKey: ["list", id],
-    queryFn: () => {
-      return db
-        .select()
-        .from(lists)
-        .where(eq(lists.id, Number(id)));
-    },
-  });
+  const { data, isLoading } = useGetListById(Number(id));
+  const [itemsToStr, setItemsToStr] = useState("");
+  const { mutate, isPending, error } = useUpdateList(Number(id));
 
   const list = data?.[0];
 
-  const [itemsToStr, setItemsToStr] = useState("");
-
-  const { mutate, isPending, error } = useMutation({
-    mutationKey: ["update-list"],
-    mutationFn: () => {
-      console.log("Submitted Data:", itemsToStr);
-      const { data: parsed, error } = updateListItemsSchema.safeParse({
+  const onSubmit = () => {
+    mutate(
+      {
         items: itemsToStr,
-      });
-      if (error) throw error?.issues[0].message ?? "Invalid data";
-      return db
-        .update(lists)
-        .set({ items: parsed.items })
-        .where(eq(lists.id, Number(id)));
-    },
-    onError: (error) => {
-      console.log("Error:", error);
-    },
-    onSuccess: () => {
-      router.navigate({
-        pathname: "/lists/details/[id]",
-        params: { id },
-      });
-    },
-  });
+      },
+      {
+        onSuccess: () => {
+          router.navigate({
+            pathname: "/lists/details/[id]",
+            params: { id },
+          });
+        },
+      },
+    );
+  };
 
   useEffect(() => {
     if (list && list.items.length > 0) {
@@ -82,7 +64,7 @@ export default function ListScreen() {
         <Ionicons name="arrow-back" size={24} />
         Retour
       </Button>
-      <Form onSubmit={mutate}>
+      <Form onSubmit={onSubmit}>
         <YStack>
           <Card elevate size="$4" bordered>
             <Card.Header padded gap={16}>

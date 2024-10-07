@@ -1,55 +1,41 @@
-import { db } from "@/db";
-import { Item, lists } from "@/db/schema";
-import { Button, Card, H5, ScrollView, XStack, YStack } from "tamagui";
+import { Item } from "@/db/schema";
+import { H5, ScrollView, XStack, YStack } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
 import Container from "@/components/Container";
 import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
-import { eq } from "drizzle-orm";
 import { useCallback, useEffect, useState } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { Ionicons } from "@expo/vector-icons";
 import Progressbar from "@/components/Progressbar";
-import { updateListItemsSchema } from "@/lib/schemas/list";
 import Dialog from "@/components/Dialog";
+import { useDeleteList, useUpdateList } from "@/queries/mutations";
+import { useGetListById } from "@/queries/queries";
+import Button from "@/components/Button";
+import TogglableListItem from "@/components/TogglableListItem";
 
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const [items, setItems] = useState<Item[]>([]);
 
-  const { data, isLoading, refetch } = useQuery({
-    queryKey: ["list", id],
-    queryFn: () => {
-      return db
-        .select()
-        .from(lists)
-        .where(eq(lists.id, Number(id)));
-    },
-  });
+  const { data, isLoading, refetch } = useGetListById(Number(id));
 
-  const { mutate } = useMutation({
-    mutationKey: ["update-list"],
-    mutationFn: () => {
-      const checked = items
-        .filter((item) => !item.taken)
-        .map((item) => item.name)
-        .join(", ");
-      console.log("Submitted Data:", checked);
-      const { data: parsed, error } = updateListItemsSchema.safeParse({
+  const { mutate } = useUpdateList(Number(id));
+
+  const onClear = () => {
+    const checked = items
+      .filter((item) => !item.taken)
+      .map((item) => item.name)
+      .join(", ");
+    console.log("Submitted Data:", checked);
+    mutate(
+      {
         items: checked,
-      });
-      if (error) throw error?.issues[0].message ?? "Invalid data";
-      return db
-        .update(lists)
-        .set({ items: parsed.items })
-        .where(eq(lists.id, Number(id)));
-    },
-    onError: (error) => {
-      console.log("Error:", error);
-    },
-    onSuccess: () => {
-      refetch();
-    },
-  });
+      },
+      {
+        onSuccess: () => {
+          refetch();
+        },
+      },
+    );
+  };
 
   const list = data?.[0];
   const hasItemsChecked = items.some((item: Item) => item.taken);
@@ -101,13 +87,9 @@ export default function ListScreen() {
           <YStack gap={16}>
             <YStack gap={8} w="100%">
               {items.map((item, id) => (
-                <Card
+                <TogglableListItem
                   key={id}
-                  elevate
-                  size="$4"
-                  flex={1}
-                  bordered
-                  bg={item.taken ? "gray" : "red"}
+                  item={item}
                   onPress={() => {
                     setItems((prev) => {
                       const newItems = [...prev];
@@ -115,18 +97,7 @@ export default function ListScreen() {
                       return newItems;
                     });
                   }}
-                >
-                  <Card.Header
-                    padded
-                    flexDirection="row"
-                    justifyContent="space-between"
-                  >
-                    <ThemedText>{item.name}</ThemedText>
-                    <XStack gap={8}>
-                      <Ionicons name="trash" size={24} color="black" />
-                    </XStack>
-                  </Card.Header>
-                </Card>
+                />
               ))}
             </YStack>
           </YStack>
@@ -139,7 +110,7 @@ export default function ListScreen() {
           borderRadius="$10"
           onPress={() => {
             console.log("Checked items");
-            mutate();
+            onClear();
           }}
         >
           Retirer les items cochés
@@ -150,6 +121,7 @@ export default function ListScreen() {
 }
 
 function DeleteDialog({ id }: { id: string }) {
+  const { mutate } = useDeleteList(Number(id));
   return (
     <Dialog
       cancelText="Annuler"
@@ -158,15 +130,10 @@ function DeleteDialog({ id }: { id: string }) {
       description="Êtes-vous sûr de vouloir supprimer cette liste ?"
       onValidate={() => {
         console.log("Delete list", id);
-        router.navigate({
-          pathname: "/lists/details/[id]/delete",
-          params: { id },
-        });
+        mutate(undefined, { onSuccess: () => router.navigate("/lists") });
       }}
     >
-      <Button variant="outlined" flex={1} bg={"red"}>
-        Supprimer la liste
-      </Button>
+      <Button type="danger">Supprimer la liste</Button>
     </Dialog>
   );
 }

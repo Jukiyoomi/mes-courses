@@ -1,40 +1,33 @@
-import { StyleSheet } from "react-native";
-import { db } from "@/db";
-import { lists } from "@/db/schema";
-import { Card, YStack, Form, Button, Input } from "tamagui";
-import { ThemedView } from "@/components/ThemedView";
+import { Card, YStack, Form, Input } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
 import { useState } from "react";
 import { router } from "expo-router";
-import { createListSchema } from "@/lib/schemas/list";
-import { useMutation } from "@tanstack/react-query";
 import Container from "@/components/Container";
+import { useCreateList } from "@/queries/mutations";
+import Button from "@/components/Button";
 
 export default function NewListScreen() {
   const [info, setInfo] = useState({ name: "" });
-  const { mutate, isPending, error } = useMutation({
-    mutationKey: ["create-list"],
-    mutationFn: () => {
-      console.log("Submitted Data:", info);
-      const { data: newList, error } = createListSchema.safeParse(info);
-      if (error) throw error.issues[0].message;
-      return db.insert(lists).values(newList);
-    },
-    onError: (error) => {
-      console.log("Error:", error);
-    },
-    onSuccess: () => {
-      setInfo({ name: "" });
-      router.navigate("/lists");
-    },
-  });
+  const { mutate, isPending, error } = useCreateList();
+
+  const onSubmit = () => {
+    mutate(
+      { info },
+      {
+        onSuccess: () => {
+          setInfo({ name: "" });
+          router.navigate("/lists");
+        },
+      },
+    );
+  };
 
   return (
     <Container>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Nouvelle Liste</ThemedText>
-      </ThemedView>
-      <Form onSubmit={mutate}>
+      <ThemedText type="title" textAlign="center">
+        Nouvelle Liste
+      </ThemedText>
+      <Form onSubmit={onSubmit}>
         <YStack>
           <Card elevate size="$4" bordered>
             <Card.Header padded gap={16}>
@@ -52,7 +45,7 @@ export default function NewListScreen() {
             {error ? (
               <Card.Footer padded>
                 <ThemedText type="default" color="red">
-                  {error}
+                  {JSON.stringify(error)}
                 </ThemedText>
               </Card.Footer>
             ) : null}
@@ -62,11 +55,3 @@ export default function NewListScreen() {
     </Container>
   );
 }
-
-const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 8,
-  },
-});
