@@ -4,6 +4,8 @@ export const createListSchema = z.object({
   name: z.string({ required_error: "Le nom de la liste est requis" }),
 });
 
+export type CreateListSchema = z.infer<typeof createListSchema>;
+
 export const updateListItemsSchema = z.object({
   items: z.string().transform((val) => {
     const uniqueItems = Array.from(
@@ -17,3 +19,5 @@ export const updateListItemsSchema = z.object({
       }));
   }),
 });
+
+export type UpdateListItemsSchema = z.infer<typeof updateListItemsSchema>;
