@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 import { useThemeColor } from "@/hooks/useThemeColor";
-import { Text, type TextProps } from "tamagui";
+import { getTokens, Text, type TextProps } from "tamagui";
 import { ColorsType } from "@/constants/Colors";
 
 export type ThemedTextProps = TextProps &
@@ -16,7 +16,13 @@ export function ThemedText({
   type = "default",
   ...rest
 }: ThemedTextProps) {
-  const color = useThemeColor({ light: lightColor, dark: darkColor }, "text");
+  const color = useThemeColor(
+    {
+      light: getTokens().color.lightPurple.val,
+      dark: getTokens().color.yellow.val,
+    },
+    "text",
+  );
 
   if (rest.color) return <Text style={[styles[type], style]} {...rest} />;
 

@@ -1,8 +1,9 @@
-import { Button, Card, H4, Image } from "tamagui";
+import { Card, H4, Image } from "tamagui";
 import { ThemedText } from "./ThemedText";
 import { InferSelectModel } from "drizzle-orm";
 import { lists } from "@/db/schema";
 import { router } from "expo-router";
+import Button from "./Button";
 
 type Props = {
   list: InferSelectModel<typeof lists>;
@@ -10,7 +11,7 @@ type Props = {
 
 export default function ListCardItem({ list }: Props) {
   return (
-    <Card elevate size="$4" bordered>
+    <Card size="$5" bordered overflow="hidden">
       <Card.Header padded>
         <H4>
           {list.name} - {list.id}
@@ -30,12 +31,10 @@ export default function ListCardItem({ list }: Props) {
       </Card.Header>
       <Card.Background>
         <Image
-          pos="absolute"
-          w={290}
-          h={178}
-          bottom={0}
-          left={0}
-          source={require("@/assets/images/partial-react-logo.png")}
+          w="100%"
+          h="100%"
+          opacity={0.4}
+          source={require("@/assets/images/someone-doing-their-shopping.png")}
         />
       </Card.Background>
     </Card>
