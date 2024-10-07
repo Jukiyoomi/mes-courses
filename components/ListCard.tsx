@@ -19,7 +19,7 @@ export default function ListCardItem({ list }: Props) {
         <Button
           borderRadius="$10"
           onPress={() => {
-            router.push({
+            router.navigate({
               pathname: "/lists/details/[id]",
               params: { id: list.id.toString() },
             });

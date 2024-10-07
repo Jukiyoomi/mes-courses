@@ -8,6 +8,7 @@ import { eq } from "drizzle-orm";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { updateListItemsSchema } from "@/lib/schemas/list";
+import { Ionicons } from "@expo/vector-icons";
 
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -42,7 +43,7 @@ export default function ListScreen() {
       console.log("Error:", error);
     },
     onSuccess: () => {
-      router.push({
+      router.navigate({
         pathname: "/lists/details/[id]",
         params: { id },
       });
@@ -60,7 +61,7 @@ export default function ListScreen() {
     }
   }, [list]);
 
-  if (!id || !list) return router.push("/lists");
+  if (!id || !list) return router.navigate("/lists");
 
   if (isLoading) return null;
 
@@ -69,7 +70,18 @@ export default function ListScreen() {
       <ThemedText type="title" textAlign="center">
         Edition {list.name}
       </ThemedText>
-      {/* <ThemedText>{itemsToStr}</ThemedText> */}
+      <Button
+        onPress={() =>
+          router.navigate({
+            pathname: "/lists/details/[id]",
+            params: { id },
+          })
+        }
+        w="$12"
+      >
+        <Ionicons name="arrow-back" size={24} />
+        Retour
+      </Button>
       <Form onSubmit={mutate}>
         <YStack>
           <Card elevate size="$4" bordered>

@@ -24,7 +24,8 @@ export default function NewListScreen() {
       console.log("Error:", error);
     },
     onSuccess: () => {
-      router.push("/lists");
+      setInfo({ name: "" });
+      router.navigate("/lists");
     },
   });
 

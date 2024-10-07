@@ -70,7 +70,7 @@ export default function ListScreen() {
 
   console.log("List", list);
 
-  if (!id || !list) return router.push("/lists");
+  if (!id || !list) return router.navigate("/lists");
 
   if (isLoading) return null;
 
@@ -86,7 +86,7 @@ export default function ListScreen() {
         <Button
           flex={1}
           onPress={() => {
-            router.push({
+            router.navigate({
               pathname: "/lists/details/[id]/edit",
               params: { id: list.id.toString() },
             });
@@ -158,7 +158,7 @@ function DeleteDialog({ id }: { id: string }) {
       description="Êtes-vous sûr de vouloir supprimer cette liste ?"
       onValidate={() => {
         console.log("Delete list", id);
-        router.push({
+        router.navigate({
           pathname: "/lists/details/[id]/delete",
           params: { id },
         });
