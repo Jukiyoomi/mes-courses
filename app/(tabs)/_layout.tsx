@@ -52,17 +52,24 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="lists/[id]"
+        name="lists/details/[id]/index"
         options={{
-          lazy: true,
           title: "Une Liste",
           tabBarButton: () => null,
-          tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon
-              name={focused ? "folder" : "folder-outline"}
-              color={color}
-            />
-          ),
+        }}
+      />
+      <Tabs.Screen
+        name="lists/details/[id]/edit"
+        options={{
+          title: "Editer Liste",
+          tabBarButton: () => null,
+        }}
+      />
+      <Tabs.Screen
+        name="lists/details/[id]/delete"
+        options={{
+          title: "SupprimerListe",
+          tabBarButton: () => null,
         }}
       />
     </Tabs>
