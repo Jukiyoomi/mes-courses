@@ -10,17 +10,27 @@ import { useDeleteList, useUpdateList } from "@/queries/mutations";
 import { useGetListById } from "@/queries/queries";
 import Button from "@/components/Button";
 import TogglableListItem from "@/components/TogglableListItem";
+import { Item } from "@/db/schema";
 
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [items, setItems] = useState<Item[]>([]);
 
-  const { data, isLoading, refetch } = useGetListById(Number(id));
-
+  const {
+    data: list,
+    isLoading,
+    refetch,
+    isSuccess,
+  } = useGetListById(Number(id));
   const { mutate } = useUpdateList(Number(id));
 
+  const [itemsObj, setItemsObj] = useState<Item[]>([]);
+
+  const hasItemsChecked = itemsObj.some((item) => item.taken);
+  const checkedPercentage =
+    (itemsObj.filter((item) => item.taken).length / itemsObj.length) * 100;
+
   const onClear = () => {
-    const checked = items
+    const checked = itemsObj
       .filter((item) => !item.taken)
       .map((item) => item.name)
       .join(", ");
@@ -37,16 +47,22 @@ export default function ListScreen() {
     );
   };
 
-  const list = data?.[0];
-  const hasItemsChecked = items.some((item: Item) => item.taken);
-  const checkedPercentage =
-    (items.filter((item: Item) => item.taken).length / items.length) * 100;
+  const onCheck = (id: number) => {
+    setItemsObj(
+      itemsObj.map((item) =>
+        item.id === id ? { ...item, taken: !item.taken } : item,
+      ),
+    );
+  };
 
   useEffect(() => {
-    if (list) {
-      setItems(list.items);
-    }
-  }, [list]);
+    if (isSuccess)
+      setItemsObj(
+        list.items
+          .split(",")
+          .map((name, id) => ({ id, name: name.trim(), taken: false })),
+      );
+  }, [isSuccess, list]);
 
   useFocusEffect(
     useCallback(() => {
@@ -65,7 +81,7 @@ export default function ListScreen() {
       <ThemedText type="title" textAlign="center">
         {list.name}
       </ThemedText>
-      {items.length > 0 ? (
+      {itemsObj.length > 0 ? (
         <Progressbar value={checkedPercentage} shouldConfetti />
       ) : null}
       <XStack gap={16}>
@@ -83,20 +99,14 @@ export default function ListScreen() {
         <DeleteDialog id={list.id.toString()} />
       </XStack>
       <ScrollView maxHeight={800} width="100%" borderRadius="$4">
-        {items && items.length > 0 ? (
+        {itemsObj.length > 0 ? (
           <YStack gap={16}>
             <YStack gap={8} w="100%">
-              {items.map((item, id) => (
+              {itemsObj.map((item, id) => (
                 <TogglableListItem
                   key={id}
                   item={item}
-                  onPress={() => {
-                    setItems((prev) => {
-                      const newItems = [...prev];
-                      newItems[id].taken = !newItems[id].taken;
-                      return newItems;
-                    });
-                  }}
+                  onPress={() => onCheck(id)}
                 />
               ))}
             </YStack>
