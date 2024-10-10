@@ -1,8 +1,12 @@
-import { Item } from "@/db/schema";
 import { H5, ScrollView, XStack, YStack } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
 import Container from "@/components/Container";
-import { router, useFocusEffect, useLocalSearchParams } from "expo-router";
+import {
+  Redirect,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from "expo-router";
 import { useCallback, useEffect, useState } from "react";
 import Progressbar from "@/components/Progressbar";
 import Dialog from "@/components/Dialog";
@@ -70,9 +74,7 @@ export default function ListScreen() {
     }, []),
   );
 
-  console.log("List", list);
-
-  if (!id || !list) return router.navigate("/lists");
+  if (!id || !list) return <Redirect href="/lists" />;
 
   if (isLoading) return null;
 
