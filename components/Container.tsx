@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { useColorScheme } from "react-native";
 import { ThemedText } from "./ThemedText";
 
-export default function Container({ children }: PropsWithChildren) {
+export function Container({ children }: PropsWithChildren) {
   const theme = useColorScheme();
   return (
     <ThemedView paddingBlock={40} paddingInline={20} flex={1} gap={16}>

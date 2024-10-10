@@ -3,8 +3,8 @@ import { db } from "@/db";
 import { lists } from "@/db/schema";
 import { H5, ScrollView, YStack } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
-import Container from "@/components/Container";
-import ListCardItem from "@/components/ListCard";
+import { Container } from "@/components/Container";
+import { ListCardItem } from "@/components/ListCard";
 
 export default function ListsScreen() {
   const { data } = useLiveQuery(db.select().from(lists));

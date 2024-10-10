@@ -1,20 +1,23 @@
 import { Card, Form, TextArea, YStack } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
-import Container from "@/components/Container";
-import { router, useLocalSearchParams } from "expo-router";
-import { useEffect, useState } from "react";
+import { Container } from "@/components/Container";
+import {
+  Link,
+  router,
+  useFocusEffect,
+  useLocalSearchParams,
+} from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useUpdateList } from "@/queries/mutations";
 import { useGetListById } from "@/queries/queries";
-import Button from "@/components/Button";
+import { Button } from "@/components/Button";
 
 export default function ListEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data, isLoading } = useGetListById(Number(id));
+  const { data: list, isLoading, refetch } = useGetListById(Number(id));
   const [itemsToStr, setItemsToStr] = useState("");
   const { mutate, isPending, error } = useUpdateList(Number(id));
-
-  const list = data?.[0];
 
   const onSubmit = () => {
     mutate(
@@ -34,14 +37,15 @@ export default function ListEditScreen() {
 
   useEffect(() => {
     if (list && list.items.length > 0) {
-      setItemsToStr(
-        list.items.reduce(
-          (acc, item) => (acc ? `${acc}, ${item.name}` : item.name),
-          "",
-        ),
-      );
+      setItemsToStr(list.items);
     }
   }, [list]);
+
+  useFocusEffect(
+    useCallback(() => {
+      refetch();
+    }, []),
+  );
 
   if (!id || !list) return router.navigate("/lists");
 
@@ -52,18 +56,12 @@ export default function ListEditScreen() {
       <ThemedText type="title" textAlign="center">
         Edition {list.name}
       </ThemedText>
-      <Button
-        onPress={() =>
-          router.navigate({
-            pathname: "/lists/details/[id]",
-            params: { id },
-          })
-        }
-        w="$12"
-      >
-        <Ionicons name="arrow-back" size={24} />
-        Retour
-      </Button>
+      <Link href={`/lists/details/${list.id}`} asChild>
+        <Button w="$12">
+          <Ionicons name="arrow-back" size={24} />
+          Retour
+        </Button>
+      </Link>
       <Form onSubmit={onSubmit}>
         <YStack>
           <Card elevate size="$4" bordered>

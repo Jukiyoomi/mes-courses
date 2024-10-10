@@ -1,33 +1,27 @@
 import React from "react";
-import { Link, Stack } from "expo-router";
-import { StyleSheet } from "react-native";
+import { Stack } from "expo-router";
 
 import { ThemedText } from "@/components/ThemedText";
 import { ThemedView } from "@/components/ThemedView";
+import { Image } from "tamagui";
 
 export default function NotFoundScreen() {
   return (
     <>
       <Stack.Screen options={{ title: "Oops!" }} />
-      <ThemedView style={styles.container}>
-        <ThemedText type="title">This screen doesn't exist.</ThemedText>
-        <Link href="/" style={styles.link}>
-          <ThemedText type="link">Go to home screen!</ThemedText>
-        </Link>
+      <ThemedView flex={1} alignItems="center" justifyContent="center">
+        <ThemedView h="80%" w="100%" p={16} gap={16}>
+          <Image
+            w="100%"
+            h="$16"
+            source={require("@/assets/images/someone-lost-at-a-supermarket.png")}
+          />
+          <ThemedText type="title" textAlign="center">
+            This screen doesn't exist.
+          </ThemedText>
+          <ThemedText>Go back using the arrow above.</ThemedText>
+        </ThemedView>
       </ThemedView>
     </>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  link: {
-    marginTop: 15,
-    paddingVertical: 15,
-  },
-});

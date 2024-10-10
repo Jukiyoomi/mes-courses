@@ -2,9 +2,9 @@ import { Card, YStack, Form, Input } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
 import { useState } from "react";
 import { router } from "expo-router";
-import Container from "@/components/Container";
+import { Container } from "@/components/Container";
 import { useCreateList } from "@/queries/mutations";
-import Button from "@/components/Button";
+import { Button } from "@/components/Button";
 
 export default function NewListScreen() {
   const [info, setInfo] = useState({ name: "" });
