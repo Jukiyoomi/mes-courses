@@ -1,19 +1,20 @@
 import { H5, ScrollView, XStack, YStack } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
-import Container from "@/components/Container";
+import { Container } from "@/components/Container";
 import {
+  Link,
   Redirect,
   router,
   useFocusEffect,
   useLocalSearchParams,
 } from "expo-router";
 import { useCallback, useEffect, useState } from "react";
-import Progressbar from "@/components/Progressbar";
-import Dialog from "@/components/Dialog";
+import { Progressbar } from "@/components/Progressbar";
+import { Dialog } from "@/components/Dialog";
 import { useDeleteList, useUpdateList } from "@/queries/mutations";
 import { useGetListById } from "@/queries/queries";
-import Button from "@/components/Button";
-import TogglableListItem from "@/components/TogglableListItem";
+import { Button } from "@/components/Button";
+import { TogglableListItem } from "@/components/TogglableListItem";
 import { Item } from "@/db/schema";
 
 export default function ListScreen() {
@@ -61,11 +62,13 @@ export default function ListScreen() {
 
   useEffect(() => {
     if (isSuccess)
-      setItemsObj(
-        list.items
-          .split(",")
-          .map((name, id) => ({ id, name: name.trim(), taken: false })),
-      );
+      if (list.items.length > 0)
+        setItemsObj(
+          list.items
+            .split(",")
+            .map((name, id) => ({ id, name: name.trim(), taken: false })),
+        );
+      else setItemsObj([]);
   }, [isSuccess, list]);
 
   useFocusEffect(
@@ -74,9 +77,9 @@ export default function ListScreen() {
     }, []),
   );
 
-  if (!id || !list) return <Redirect href="/lists" />;
-
   if (isLoading) return null;
+
+  if (!id || !list) return <Redirect href="/lists" />;
 
   return (
     <Container>
@@ -87,17 +90,9 @@ export default function ListScreen() {
         <Progressbar value={checkedPercentage} shouldConfetti />
       ) : null}
       <XStack gap={16}>
-        <Button
-          flex={1}
-          onPress={() => {
-            router.navigate({
-              pathname: "/lists/details/[id]/edit",
-              params: { id: list.id.toString() },
-            });
-          }}
-        >
-          Ajouter un item
-        </Button>
+        <Link href={`/lists/details/${list.id}/edit`} asChild>
+          <Button>Ajouter un item</Button>
+        </Link>
         <DeleteDialog id={list.id.toString()} />
       </XStack>
       <ScrollView maxHeight={800} width="100%" borderRadius="$4">

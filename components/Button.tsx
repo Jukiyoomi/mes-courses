@@ -74,4 +74,4 @@ const Button = forwardRef<HTMLButtonElement, PropsWithChildren<Props>>(
 
 Button.displayName = "Button";
 
-export default Button;
+export { Button };
