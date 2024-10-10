@@ -8,7 +8,7 @@ import { useUpdateList } from "@/queries/mutations";
 import { useGetListById } from "@/queries/queries";
 import Button from "@/components/Button";
 
-export default function ListScreen() {
+export default function ListEditScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data, isLoading } = useGetListById(Number(id));
   const [itemsToStr, setItemsToStr] = useState("");
