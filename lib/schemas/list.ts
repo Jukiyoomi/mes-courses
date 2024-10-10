@@ -13,10 +13,8 @@ export const updateListItemsSchema = z.object({
     );
     return uniqueItems
       .filter((item) => item !== "")
-      .map((item) => ({
-        name: item.charAt(0).toUpperCase() + item.slice(1),
-        taken: false,
-      }));
+      .map((item) => item.charAt(0).toUpperCase() + item.slice(1))
+      .join(", ");
   }),
 });
 
