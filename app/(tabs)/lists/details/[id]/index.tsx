@@ -91,7 +91,7 @@ export default function ListScreen() {
       ) : null}
       <XStack gap={16}>
         <Link href={`/lists/details/${list.id}/edit`} asChild>
-          <Button>Ajouter un item</Button>
+          <Button flex={1}>Ajouter un item</Button>
         </Link>
         <DeleteDialog id={list.id.toString()} />
       </XStack>
@@ -140,7 +140,9 @@ function DeleteDialog({ id }: { id: string }) {
         mutate(undefined, { onSuccess: () => router.navigate("/lists") });
       }}
     >
-      <Button type="danger">Supprimer la liste</Button>
+      <Button type="danger" flex={1}>
+        Supprimer la liste
+      </Button>
     </Dialog>
   );
 }
