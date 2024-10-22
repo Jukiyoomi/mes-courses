@@ -2,6 +2,7 @@ import { z } from "zod";
 
 export const createListSchema = z.object({
   name: z.string({ required_error: "Le nom de la liste est requis" }),
+  isGlobal: z.boolean(),
 });
 
 export type CreateListSchema = z.infer<typeof createListSchema>;
