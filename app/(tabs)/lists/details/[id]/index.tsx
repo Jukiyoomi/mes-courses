@@ -86,6 +86,11 @@ export default function ListScreen() {
       <ThemedText type="title" textAlign="center">
         {list.name}
       </ThemedText>
+      {list.isGlobal ? (
+        <ThemedText type="subtitle" textAlign="center">
+          {"Liste globale"}
+        </ThemedText>
+      ) : null}
       {itemsObj.length > 0 ? (
         <Progressbar value={checkedPercentage} shouldConfetti />
       ) : null}
