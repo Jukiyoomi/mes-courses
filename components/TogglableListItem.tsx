@@ -8,7 +8,7 @@ type Props = {
   onPress: () => void;
 };
 
-export default function TogglableListItem({ item, onPress }: Props) {
+export function TogglableListItem({ item, onPress }: Props) {
   const theme = useColorScheme();
   const yellowColor = getTokens().color.$yellow.val;
   const lightPurpleColor = getTokens().color.$lightPurple.val;

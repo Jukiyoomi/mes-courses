@@ -1,7 +1,7 @@
 import { HelloWave } from "@/components/HelloWave";
 import { ThemedView } from "@/components/ThemedView";
 import { Image } from "tamagui";
-import Container from "@/components/Container";
+import { Container } from "@/components/Container";
 
 export default function HomeScreen() {
   return (

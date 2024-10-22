@@ -10,7 +10,7 @@ type Props = {
   shouldConfetti?: boolean;
 };
 
-export default function Progressbar({ value, shouldConfetti = false }: Props) {
+export function Progressbar({ value, shouldConfetti = false }: Props) {
   const yellowColor = getTokens().color.yellow.val;
   const lightPurpleColor = getTokens().color.lightPurple.val;
   const borderColor = useThemeColor(

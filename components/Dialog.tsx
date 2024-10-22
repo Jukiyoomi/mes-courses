@@ -10,7 +10,7 @@ type Props = {
   shouldBeNative?: boolean;
 };
 
-export default function Dialog({
+export function Dialog({
   onValidate,
   children,
   title,
