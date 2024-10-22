@@ -70,5 +70,22 @@
     "*.{js,jsx,ts,tsx}": [
       "prettier --write"
     ]
+  },
+  "eslintConfig": {
+    "extends": [
+      "expo",
+      "prettier"
+    ],
+    "plugins": [
+      "prettier"
+    ],
+    "rules": {
+      "prettier/prettier": "error"
+    }
+  },
+  "prettier": {
+    "semi": true,
+    "singleQuote": false,
+    "endOfLine": "lf"
   }
 }
