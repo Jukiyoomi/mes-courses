@@ -11,7 +11,13 @@ type Props = {
 
 export function ListCardItem({ list }: Props) {
   return (
-    <Card size="$5" bordered overflow="hidden">
+    <Card
+      size="$5"
+      bordered
+      overflow="hidden"
+      borderLeftWidth={list.isGlobal ? 4 : 0}
+      borderLeftColor={list.isGlobal ? "$yellow" : "$colorTransparent"}
+    >
       <Card.Header padded>
         <H4>
           {list.name} - {list.id}
