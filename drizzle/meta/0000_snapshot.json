@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "bd81ee0e-6e31-482b-ac4d-71c8e33b6900",
+  "id": "d439bbcc-a750-4ac2-a59a-40d9802f5690",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "lists": {
@@ -21,13 +21,20 @@
           "notNull": true,
           "autoincrement": false
         },
+        "is_global": {
+          "name": "is_global",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "autoincrement": false,
+          "default": false
+        },
         "items": {
           "name": "items",
           "type": "text",
           "primaryKey": false,
           "notNull": true,
-          "autoincrement": false,
-          "default": "(json_array())"
+          "autoincrement": false
         }
       },
       "indexes": {
