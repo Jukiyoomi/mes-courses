@@ -12,7 +12,7 @@ import { useCallback, useEffect, useState } from "react";
 import { Progressbar } from "@/components/Progressbar";
 import { Dialog } from "@/components/Dialog";
 import { useDeleteList, useUpdateList } from "@/queries/mutations";
-import { useGetListById } from "@/queries/queries";
+import { useClassify, useGetListById } from "@/queries/queries";
 import { Button } from "@/components/Button";
 import { TogglableListItem } from "@/components/TogglableListItem";
 import { Item } from "@/db/schema";
@@ -22,20 +22,29 @@ export default function ListScreen() {
 
   const {
     data: list,
-    isLoading,
-    refetch,
-    isSuccess,
+    isLoading: getByListIsLoading,
+    refetch: getByListRefetch,
+    isSuccess: getByListIsSuccess,
   } = useGetListById(Number(id));
+  const {
+    refetch: classifyRefectch,
+    data: classifyData,
+    isLoading: classifyIsLoading,
+    isSuccess: classifyIsSuccess,
+  } = useClassify(Number(id), list?.items ?? "");
   const { mutate } = useUpdateList(Number(id));
 
-  const [itemsObj, setItemsObj] = useState<Item[]>([]);
+  const [itemsObj, setItemsObj] = useState<ClassifiedItems>([]);
 
-  const hasItemsChecked = itemsObj.some((item) => item.taken);
+  const flatItems = itemsObj.flatMap(({ items }) => items);
+
+  const hasItemsChecked = flatItems.some((item) => item.taken);
+
   const checkedPercentage =
-    (itemsObj.filter((item) => item.taken).length / itemsObj.length) * 100;
+    (flatItems.filter((item) => item.taken).length / flatItems.length) * 100;
 
   const onClear = () => {
-    const checked = itemsObj
+    const checked = flatItems
       .filter((item) => !item.taken)
       .map((item) => item.name)
       .join(", ");
@@ -46,7 +55,7 @@ export default function ListScreen() {
       },
       {
         onSuccess: () => {
-          refetch();
+          getByListRefetch();
         },
       },
     );
@@ -73,11 +82,11 @@ export default function ListScreen() {
 
   useFocusEffect(
     useCallback(() => {
-      refetch();
+      getByListRefetch();
     }, []),
   );
 
-  if (isLoading) return null;
+  if (getByListIsLoading) return null;
 
   if (!id || !list) return <Redirect href="/lists" />;
 
