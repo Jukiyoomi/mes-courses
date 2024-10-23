@@ -92,14 +92,12 @@ export default function ListScreen() {
 
   return (
     <Container>
-      <ThemedText type="title" textAlign="center">
-        {list.name}
-      </ThemedText>
-      {list.isGlobal ? (
-        <ThemedText type="subtitle" textAlign="center">
-          {"Liste globale"}
-        </ThemedText>
-      ) : null}
+      <XStack justifyContent="center" gap="$2">
+        <ThemedText type="title">{list.name}</ThemedText>
+        {list.isGlobal ? (
+          <ThemedText type="subtitle">({"Liste globale"})</ThemedText>
+        ) : null}
+      </XStack>
       {itemsObj.length > 0 ? (
         <Progressbar value={checkedPercentage} shouldConfetti />
       ) : null}
