@@ -1,4 +1,4 @@
-import { H5, ScrollView, XStack, YStack } from "tamagui";
+import { XStack } from "tamagui";
 import { ThemedText } from "@/components/ThemedText";
 import { Container } from "@/components/Container";
 import {
@@ -14,8 +14,8 @@ import { Dialog } from "@/components/Dialog";
 import { useDeleteList, useUpdateList } from "@/queries/mutations";
 import { useClassify, useGetListById } from "@/queries/queries";
 import { Button } from "@/components/Button";
-import { TogglableListItem } from "@/components/TogglableListItem";
-import { Item } from "@/db/schema";
+import { LabeledItemsList } from "@/components/LabeledItemList";
+import { ClassifiedItems } from "@/lib/schemas/list";
 
 export default function ListScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -61,24 +61,23 @@ export default function ListScreen() {
     );
   };
 
-  const onCheck = (id: number) => {
-    setItemsObj(
-      itemsObj.map((item) =>
-        item.id === id ? { ...item, taken: !item.taken } : item,
-      ),
-    );
-  };
+  useEffect(() => {
+    if (getByListIsSuccess && list.items.length > 0) {
+      const formattedItems = list.items
+        .split(",")
+        .map((name, id) => ({ id, name: name.trim(), taken: false }));
+      setItemsObj([
+        {
+          type: "all",
+          items: formattedItems,
+        },
+      ]);
+    } else setItemsObj([]);
+  }, [getByListIsSuccess, list]);
 
   useEffect(() => {
-    if (isSuccess)
-      if (list.items.length > 0)
-        setItemsObj(
-          list.items
-            .split(",")
-            .map((name, id) => ({ id, name: name.trim(), taken: false })),
-        );
-      else setItemsObj([]);
-  }, [isSuccess, list]);
+    if (classifyIsSuccess && classifyData) setItemsObj(classifyData);
+  }, [classifyIsSuccess, classifyData]);
 
   useFocusEffect(
     useCallback(() => {
@@ -107,23 +106,22 @@ export default function ListScreen() {
         </Link>
         <DeleteDialog id={list.id.toString()} />
       </XStack>
-      <ScrollView maxHeight={800} width="100%" borderRadius="$4">
-        {itemsObj.length > 0 ? (
-          <YStack gap={16}>
-            <YStack gap={8} w="100%">
-              {itemsObj.map((item, id) => (
-                <TogglableListItem
-                  key={id}
-                  item={item}
-                  onPress={() => onCheck(id)}
-                />
-              ))}
-            </YStack>
-          </YStack>
-        ) : (
-          <H5>No items in this list.</H5>
-        )}
-      </ScrollView>
+      {list.isGlobal ? (
+        <Button
+          w={"100%"}
+          variant="outlined"
+          disabled={list.items === "" || classifyIsLoading}
+          onPress={() => {
+            console.log("Submitted Data:", list.items);
+            classifyRefectch();
+          }}
+        >
+          {classifyIsLoading
+            ? "Classification en cours..."
+            : "Classifier les items"}
+        </Button>
+      ) : null}
+      <LabeledItemsList itemsObj={itemsObj} setItemsObj={setItemsObj} />
       {hasItemsChecked ? (
         <Button
           borderRadius="$10"
