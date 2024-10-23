@@ -8,9 +8,3 @@ export const lists = sqliteTable("lists", {
     .notNull()
     .$defaultFn(() => ""),
 });
-
-export type Item = {
-  id?: number;
-  name: string;
-  taken: boolean;
-};
