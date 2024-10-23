@@ -20,3 +20,28 @@ export const updateListItemsSchema = z.object({
 });
 
 export type UpdateListItemsSchema = z.infer<typeof updateListItemsSchema>;
+
+export const classifyListItemsSchema = z.string().transform((val) => {
+  const lines = val.trim().split(";");
+  const result = lines.map((line) => {
+    const [type, itemsString] = line.split(":");
+
+    const items = itemsString
+      .split(",")
+      .map((item) => item.trim())
+      .filter((item) => item.length > 0);
+
+    return {
+      type: type.replaceAll("*", "").trim(),
+      items: items.map((item, id) => ({
+        id,
+        name: item,
+        taken: false,
+      })),
+    };
+  });
+  return result;
+});
+
+export type ClassifiedItems = z.infer<typeof classifyListItemsSchema>;
+export type Item = ClassifiedItems[number]["items"][number];
