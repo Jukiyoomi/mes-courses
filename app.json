@@ -2,6 +2,7 @@
   "expo": {
     "name": "Mes Courses",
     "slug": "mes-courses",
+    "newArchEnabled": true,
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -11,7 +12,7 @@
       "image": "./assets/images/shopping-cart.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
-   },
+    },
     "ios": {
       "supportsTablet": true
     },
@@ -23,7 +24,8 @@
       "package": "com.jukiyoomi.mescourses"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-font"
     ],
     "experiments": {
       "typedRoutes": true
