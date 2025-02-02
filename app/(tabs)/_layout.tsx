@@ -51,20 +51,6 @@ export default function TabLayout() {
           ),
         }}
       />
-      <Tabs.Screen
-        name="lists/details/[id]/index"
-        options={{
-          title: "Une Liste",
-          tabBarButton: () => null,
-        }}
-      />
-      <Tabs.Screen
-        name="lists/details/[id]/edit"
-        options={{
-          title: "Editer Liste",
-          tabBarButton: () => null,
-        }}
-      />
     </Tabs>
   );
 }

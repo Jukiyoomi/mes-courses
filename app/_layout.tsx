@@ -51,17 +51,24 @@ export default function RootLayout() {
   }
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <TamaguiProvider config={tamaguiConfig} defaultTheme={colorScheme!}>
-        <ThemeProvider
-          value={colorScheme === "dark" ? DarkTheme : DefaultTheme}
-        >
-          <Stack>
-            <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-            <Stack.Screen name="+not-found" />
-          </Stack>
-        </ThemeProvider>
-      </TamaguiProvider>
-    </QueryClientProvider>
+    <AppProvider>
+      <Stack>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+
+        <Stack.Screen
+          name="lists/details/[id]/index"
+          options={{
+            title: "Une Liste",
+          }}
+        />
+        <Stack.Screen
+          name="lists/details/[id]/edit"
+          options={{
+            title: "Editer Liste",
+          }}
+        />
+        <Stack.Screen name="+not-found" />
+      </Stack>
+    </AppProvider>
   );
 }
