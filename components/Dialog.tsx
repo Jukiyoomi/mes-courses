@@ -7,7 +7,6 @@ type Props = {
   cancelText: string;
   description: string;
   title: string;
-  shouldBeNative?: boolean;
 };
 
 export function Dialog({
@@ -17,10 +16,9 @@ export function Dialog({
   description,
   validateText,
   cancelText,
-  shouldBeNative = false,
 }: PropsWithChildren<Props>) {
   return (
-    <AlertDialog native={shouldBeNative}>
+    <AlertDialog native={true}>
       <AlertDialog.Trigger asChild>{children}</AlertDialog.Trigger>
       <AlertDialog.Portal>
         <AlertDialog.Overlay
@@ -34,16 +32,6 @@ export function Dialog({
           bordered
           elevate
           key="content"
-          animation={[
-            "bouncy",
-            {
-              opacity: {
-                overshootClamping: true,
-              },
-            },
-          ]}
-          enterStyle={{ x: 0, y: -20, opacity: 0, scale: 0.9 }}
-          exitStyle={{ x: 0, y: 10, opacity: 0, scale: 0.95 }}
           x={0}
           scale={1}
           opacity={1}

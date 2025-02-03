@@ -1,33 +1,18 @@
-import {
-  DarkTheme,
-  DefaultTheme,
-  ThemeProvider,
-} from "@react-navigation/native";
 import { useFonts } from "expo-font";
 import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 import "react-native-reanimated";
 import "@tamagui/core/reset.css";
-import { TamaguiProvider } from "tamagui";
-
-import { useColorScheme } from "@/hooks/useColorScheme";
-import { tamaguiConfig } from "@/tamagui.config";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-import { db } from "@/db";
-import migrations from "@/drizzle/migrations";
+import { useMigrationHelper } from "@/db";
 import { ThemedText } from "@/components/ThemedText";
-import { useReactQueryDevTools } from "@dev-plugins/react-query";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import AppProvider from "@/app/providers";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
-const queryClient = new QueryClient();
 
 export default function RootLayout() {
-  useReactQueryDevTools(queryClient);
-  const { error } = useMigrations(db, migrations);
-  const colorScheme = useColorScheme();
+  const { success, error } = useMigrationHelper();
   const [loaded] = useFonts({
     SpaceMono: require("../assets/fonts/SpaceMono-Regular.ttf"),
     Inter: require("@tamagui/font-inter/otf/Inter-Medium.otf"),
@@ -50,21 +35,21 @@ export default function RootLayout() {
     );
   }
 
+  if (!success) {
+    return <ThemedText>Initialisation de la base de données...</ThemedText>;
+  }
+
   return (
     <AppProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-
         <Stack.Screen
-          name="lists/details/[id]/index"
+          name="(details-tabs)"
           options={{
-            title: "Une Liste",
-          }}
-        />
-        <Stack.Screen
-          name="lists/details/[id]/edit"
-          options={{
-            title: "Editer Liste",
+            title: "Détails de liste",
+            headerShown: true,
+            presentation: "transparentModal",
+            animation: "flip",
           }}
         />
         <Stack.Screen name="+not-found" />
